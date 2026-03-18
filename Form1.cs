@@ -11,9 +11,9 @@ namespace Blackjack
             InitializeComponent();
         }
 
-        private void btnDrawCard_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-            Card card = new Card(Suit.Clubs,Rank.Ace);
+            Card card = new Card(Rank.Eight,Suit.Diamonds);
 
             MessageBox.Show(card.ToString());
         }

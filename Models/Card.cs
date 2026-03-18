@@ -33,7 +33,7 @@ namespace Blackjack.Models
         public Suit Suit { get; set; }
         public Rank Rank { get; set; }
 
-        public Card(Suit suit, Rank rank)
+        public Card( Rank rank, Suit suit)
         {
             Suit = suit;
             Rank = rank;

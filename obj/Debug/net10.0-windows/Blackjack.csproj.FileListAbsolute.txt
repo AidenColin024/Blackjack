@@ -1,0 +1,17 @@
+C:\Users\aiden\source\repos\Blackjack\Blackjack\obj\Debug\net10.0-windows\Blackjack.Form1.resources
+C:\Users\aiden\source\repos\Blackjack\Blackjack\obj\Debug\net10.0-windows\Blackjack.csproj.GenerateResource.cache
+C:\Users\aiden\source\repos\Blackjack\Blackjack\obj\Debug\net10.0-windows\Blackjack.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\aiden\source\repos\Blackjack\Blackjack\obj\Debug\net10.0-windows\Blackjack.AssemblyInfoInputs.cache
+C:\Users\aiden\source\repos\Blackjack\Blackjack\obj\Debug\net10.0-windows\Blackjack.AssemblyInfo.cs
+C:\Users\aiden\source\repos\Blackjack\Blackjack\obj\Debug\net10.0-windows\Blackjack.csproj.CoreCompileInputs.cache
+C:\Users\aiden\source\repos\Blackjack\Blackjack\obj\Debug\net10.0-windows\Blackjack.sourcelink.json
+C:\Users\aiden\source\repos\Blackjack\Blackjack\bin\Debug\net10.0-windows\Blackjack.exe
+C:\Users\aiden\source\repos\Blackjack\Blackjack\bin\Debug\net10.0-windows\Blackjack.deps.json
+C:\Users\aiden\source\repos\Blackjack\Blackjack\bin\Debug\net10.0-windows\Blackjack.runtimeconfig.json
+C:\Users\aiden\source\repos\Blackjack\Blackjack\bin\Debug\net10.0-windows\Blackjack.dll
+C:\Users\aiden\source\repos\Blackjack\Blackjack\bin\Debug\net10.0-windows\Blackjack.pdb
+C:\Users\aiden\source\repos\Blackjack\Blackjack\obj\Debug\net10.0-windows\Blackjack.dll
+C:\Users\aiden\source\repos\Blackjack\Blackjack\obj\Debug\net10.0-windows\refint\Blackjack.dll
+C:\Users\aiden\source\repos\Blackjack\Blackjack\obj\Debug\net10.0-windows\Blackjack.pdb
+C:\Users\aiden\source\repos\Blackjack\Blackjack\obj\Debug\net10.0-windows\Blackjack.genruntimeconfig.cache
+C:\Users\aiden\source\repos\Blackjack\Blackjack\obj\Debug\net10.0-windows\ref\Blackjack.dll
