@@ -1,3 +1,4 @@
+using Blackjack.Models;
 using System;
 using System.Windows.Forms;
 
@@ -12,7 +13,9 @@ namespace Blackjack
 
         private void btnDrawCard_Click(object sender, EventArgs e)
         {
+            Card card = new Card(Suit.Clubs,Rank.Ace);
 
+            MessageBox.Show(card.ToString());
         }
     }
 }
