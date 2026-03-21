@@ -15,13 +15,10 @@ namespace Blackjack
         {
             Deck deck = new Deck();
 
-            String output = "";
+            Card card1 = deck.DrawCard();
+            Card card2 = deck.DrawCard();
 
-            foreach (Card card in deck.cards)
-            {
-                output += card.ToString() + "\n";
-            }
-            MessageBox.Show(output);
+            MessageBox.Show(card1 + "\n" + card2);
         }
 
         private void button2_Click(object sender, EventArgs e)
