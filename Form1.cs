@@ -13,9 +13,15 @@ namespace Blackjack
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Card card = new Card(Rank.Eight,Suit.Diamonds);
+            Deck deck = new Deck();
 
-            MessageBox.Show(card.ToString());
+            String output = "";
+
+            foreach (Card card in deck.cards)
+            {
+                output += card.ToString() + "\n";
+            }
+            MessageBox.Show(output);
         }
     }
 }
