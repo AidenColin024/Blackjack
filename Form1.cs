@@ -15,10 +15,13 @@ namespace Blackjack
         {
             Deck deck = new Deck();
 
+            deck.shuffle();
+
             Card card1 = deck.DrawCard();
             Card card2 = deck.DrawCard();
+            Card card3 = deck.DrawCard();
 
-            MessageBox.Show(card1 + "\n" + card2);
+            MessageBox.Show(card1 + "\n" + card2 + "\n" + card3);
         }
 
         private void button2_Click(object sender, EventArgs e)
