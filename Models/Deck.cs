@@ -33,5 +33,18 @@ namespace Blackjack.Models
             return card;
         }
 
+        public void shuffle()
+        {
+            Random random = new Random();
+
+            for (int i = 0; i < cards.Count; i++)
+            {
+                int randomIndex = random.Next(0, cards.Count);
+
+                Card temp = cards[i];
+                cards[i] = cards[randomIndex];
+                cards[randomIndex] = temp;
+            }
+        }
     }
 }
