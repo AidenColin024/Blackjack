@@ -24,18 +24,7 @@ namespace Blackjack.Models
             
             foreach (Card card  in cards)
             {
-                if(card.Rank == Rank.Jack || card.Rank == Rank.Queen || card.Rank == Rank.King)
-                {
-                    Total += 10;
-                }
-                else if(card.Rank == Rank.Ace)
-                {
-                    Total += 11;
-                }
-                else
-                {
-                    Total += (int)card.Rank + 2;
-                }
+                Total += card.GetValue();
             }
             return Total;
         }
