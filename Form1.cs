@@ -23,12 +23,5 @@ namespace Blackjack
 
             MessageBox.Show(card1 + "\n" + card2 + "\n" + card3);
         }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            Card card = new Card(Rank.Eight, Suit.Diamonds);
-
-            MessageBox.Show(card.ToString());
-        }
     }
 }
