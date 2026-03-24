@@ -17,6 +17,8 @@ namespace Blackjack
 
             Hand hand = new Hand();
 
+            deck.shuffle();
+
             hand.AddCard(deck.DrawCard());
             hand.AddCard(deck.DrawCard());
 

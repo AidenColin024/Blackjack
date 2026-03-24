@@ -50,7 +50,7 @@ namespace Blackjack.Models
             }
             else
             {
-                return (int)Rank + 2;
+                return (int)Rank;
             }
         }
 
