@@ -1,11 +1,16 @@
 using Blackjack.Models;
 using System;
+using System.Drawing.Text;
+using System.Media;
 using System.Windows.Forms;
 
 namespace Blackjack
 {
     public partial class Form1 : Form
     {
+        private Deck deck;
+        private Dealer dealer;
+        private Speler speler;
         public Form1()
         {
             InitializeComponent();
@@ -38,6 +43,20 @@ namespace Blackjack
             output += "\nTotaal: " + dealer.hand.GetTotalValue();
 
             MessageBox.Show(output);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            speler.AddCard(deck.DrawCard());
+
+            MessageBox.Show("Totaal speler " + speler.GetTotalValue());
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            dealer.Play(deck);
+
+            MessageBox.Show("Dealer totaal " + dealer.hand.GetTotalValue());
         }
     }
 }
