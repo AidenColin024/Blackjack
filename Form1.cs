@@ -16,11 +16,15 @@ namespace Blackjack
             Deck deck = new Deck();
 
             Dealer dealer = new Dealer();
+            Speler speler = new Speler();
 
             deck.shuffle();
 
             dealer.AddCard(deck.DrawCard());
             dealer.AddCard(deck.DrawCard());
+
+            speler.AddCard(deck.DrawCard());
+            speler.AddCard(deck.DrawCard());
 
             dealer.Play(deck);
 
