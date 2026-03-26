@@ -15,21 +15,23 @@ namespace Blackjack
         {
             Deck deck = new Deck();
 
-            Hand hand = new Hand();
+            Dealer dealer = new Dealer();
 
             deck.shuffle();
 
-            hand.AddCard(deck.DrawCard());
-            hand.AddCard(deck.DrawCard());
+            dealer.AddCard(deck.DrawCard());
+            dealer.AddCard(deck.DrawCard());
+
+            dealer.Play(deck);
 
             string output = "";
 
-            foreach (Card card in hand.cards)
+            foreach (Card card in dealer.hand.cards)
             {
                 output += card + "\n";
             }
 
-            output += "\nTotaal: " + hand.GetTotalValue();
+            output += "\nTotaal: " + dealer.hand.GetTotalValue();
 
             MessageBox.Show(output);
         }
