@@ -29,6 +29,7 @@ namespace Blackjack.Models
             return hand.GetTotalValue();
         }
 
+        // Stelt de inzet in voor de huidige ronde
         public void PlaatsInzet (decimal bedrag)
         {
             Inzet = bedrag;
