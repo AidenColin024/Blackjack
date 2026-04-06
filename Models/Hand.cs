@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Blackjack.Models
 {
+    // Stelt de hand voor van een speler of dealer (verzameling kaarten)
     internal class Hand
     {
         public List<Card> cards;
@@ -13,16 +14,18 @@ namespace Blackjack.Models
             cards = new List<Card>();
         }
 
+        // Voegt een kaart toe aan de hand
         public void AddCard(Card card)
         {
             cards.Add(card);
         }
 
+        // Berekent de totale waarde van alle kaarten in de hand
         public int GetTotalValue()
         {
             int Total = 0;
-            
-            foreach (Card card  in cards)
+
+            foreach (Card card in cards)
             {
                 Total += card.GetValue();
             }

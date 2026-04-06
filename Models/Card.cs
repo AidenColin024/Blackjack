@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Blackjack.Models
 {
+    // Enum voor de vier kleuren van een speelkaart
     public enum Suit
     {
         Hearts,
@@ -12,6 +13,7 @@ namespace Blackjack.Models
         Spades
     }
 
+    // Enum voor de waarden van een speelkaart (Two t/m Ace)
     public enum Rank
     {
         Two = 2,
@@ -28,24 +30,29 @@ namespace Blackjack.Models
         King = 13,
         Ace = 14
     }
+
+    // Stelt één speelkaart voor met een kleur en waarde
     internal class Card
     {
         public Suit Suit { get; set; }
         public Rank Rank { get; set; }
 
-        public Card( Rank rank, Suit suit)
+        public Card(Rank rank, Suit suit)
         {
             Suit = suit;
             Rank = rank;
         }
 
+        // Geeft de Blackjack-waarde terug van de kaart
+        // Plaatjes en tienen = 10, Aas = 11, overige kaarten = hun eigen waarde
         public int GetValue()
         {
             if (Rank == Rank.Jack || Rank == Rank.Queen || Rank == Rank.King || Rank == Rank.Ten)
             {
-                return  10;
+                return 10;
             }
-            else if (Rank == Rank.Ace){
+            else if (Rank == Rank.Ace)
+            {
                 return 11;
             }
             else
@@ -54,6 +61,7 @@ namespace Blackjack.Models
             }
         }
 
+        // Geeft een leesbare weergave van de kaart, bijv. "King of Hearts"
         public override string ToString()
         {
             return $"{Rank} of {Suit}";

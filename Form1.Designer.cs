@@ -49,7 +49,7 @@
             button2.Name = "button2";
             button2.Size = new Size(150, 46);
             button2.TabIndex = 1;
-            button2.Text = "Stand";
+            button2.Text = "Hit";
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
             // 
@@ -59,7 +59,7 @@
             button3.Name = "button3";
             button3.Size = new Size(150, 46);
             button3.TabIndex = 2;
-            button3.Text = "Hit";
+            button3.Text = "Stand";
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
             // 
