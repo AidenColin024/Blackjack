@@ -36,6 +36,7 @@ namespace Blackjack.Models
         public void PlaatsInzet (decimal bedrag)
         {
             Inzet = bedrag;
+            Bankroll -= bedrag;
         }
     }
 }

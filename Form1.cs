@@ -22,6 +22,18 @@ namespace Blackjack
             dealer = new Dealer();
             speler = new Speler();
 
+            // Inzet ophalen via inputdialoog
+            string input = Microsoft.VisualBasic.Interaction.InputBox("Hoeveel wil je inzetten? (Max €" + speler.Bankroll + ")", "Inzet plaatsen", "10");
+
+            // Valideer of de invoer een geldig getal is
+            if (!decimal.TryParse(input, out decimal inzet)|| inzet <= 0 || inzet > speler.Bankroll)
+            {
+                MessageBox.Show("Ongeldige inzet. Probeer opnieuw.");
+                return;
+            }
+
+            speler.PlaatsInzet(inzet);
+
             deck.shuffle();
 
             // Dealer en speler krijgen elk twee kaarten
