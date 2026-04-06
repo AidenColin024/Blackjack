@@ -2,18 +2,21 @@
 
 namespace Blackjack.Models
 {
-    // Stelt een speler voor met een hand
+    // Stelt een speler voor met een hand, inzet en bankroll
     internal class Speler
     {
         public Hand hand;
 
         // Huidige inzet van de speler voor deze ronde
         public decimal Inzet {  get; private set; }
+        // Huidig saldo van de speler
+        public decimal Bankroll {  get; private set; }
 
         public Speler()
         {
             hand = new Hand();
             Inzet = 0;
+            Bankroll = 100m;
 
         }
 
