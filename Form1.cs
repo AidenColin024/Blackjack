@@ -13,37 +13,41 @@ namespace Blackjack
         public Form1()
         {
             InitializeComponent();
+
+           speler = new Speler();
         }
 
         // Knop: Start een nieuw spel
         private void button1_Click(object sender, EventArgs e)
         {
+            // Alleen deck en dealer resetten per ronde, speler blijft hetzelfde
             deck = new Deck();
             dealer = new Dealer();
-            speler = new Speler();
 
-            // Inzet ophalen via inputdialoog
+            //inzet ophalen via inputdialoog
             string input = Microsoft.VisualBasic.Interaction.InputBox("Hoeveel wil je inzetten? (Max €" + speler.Bankroll + ")", "Inzet plaatsen", "10");
 
-            // Valideer of de invoer een geldig getal is
-            if (!decimal.TryParse(input, out decimal inzet)|| inzet <= 0 || inzet > speler.Bankroll)
+            //valideer of inzet geldig is
+            if (!decimal.TryParse(input, out decimal inzet) || inzet <= 0 || inzet > speler.Bankroll)
             {
                 MessageBox.Show("Ongeldige inzet. Probeer opnieuw.");
                 return;
             }
 
+            // Hand resetten voor nieuwe ronde
+            speler.hand = new Hand();
             speler.PlaatsInzet(inzet);
 
             deck.shuffle();
 
-            // Dealer en speler krijgen elk twee kaarten
             dealer.AddCard(deck.DrawCard());
             dealer.AddCard(deck.DrawCard());
             speler.AddCard(deck.DrawCard());
             speler.AddCard(deck.DrawCard());
 
-            // Toon kaarten speler en eerste kaart dealer
-            string output = "Speler kaarten:\n";
+            //toon 2 kaarten van de speler en de eerse kaart van de dealer
+            string output = $"Inzet: €{speler.Inzet} | Bankroll: €{speler.Bankroll}\n\n";
+            output += "Speler kaarten:\n";
             foreach (Card card in speler.hand.cards)
                 output += card + "\n";
             output += "Totaal: " + speler.hand.GetTotalValue();
