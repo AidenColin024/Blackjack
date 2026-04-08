@@ -72,6 +72,7 @@ namespace Blackjack
         }
 
         // Knop: Stand - dealer speelt en uitslag wordt bepaald
+        // Knop: Stand - dealer speelt en uitslag wordt bepaald
         private void button3_Click(object sender, EventArgs e)
         {
             if (deck == null || dealer == null || speler == null)
@@ -88,15 +89,26 @@ namespace Blackjack
 
             string resultaat = $"Speler: {spelerTotaal}\nDealer: {dealerTotaal}\n\n";
 
-            // Bepaal wie gewonnen heeft
+            //Bepaald wie gewonnen heeft
             if (spelerTotaal > 21)
-                resultaat += "Bust! Je verliest.";
+            {
+                // Bust: speler verliest, geen uitbetaling
+                resultaat += $"Bust! Je verliest €{speler.Inzet}.";
+            }
             else if (dealerTotaal > 21 || spelerTotaal > dealerTotaal)
-                resultaat += "Gewonnen!";
+            {
+                // Winst: inzet terug + 1:1 winst
+                speler.Uitbetaling(speler.Inzet * 2);
+                resultaat += $"Gewonnen! Je ontvangt €{speler.Inzet * 2} (1:1).\nBankroll: €{speler.Bankroll}";
+            }
             else if (spelerTotaal == dealerTotaal)
+            {
                 resultaat += "Gelijkspel!";
+            }
             else
+            {
                 resultaat += $"Verloren! Dealer wint met {dealerTotaal}.";
+            }
 
             MessageBox.Show(resultaat);
         }

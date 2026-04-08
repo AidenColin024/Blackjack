@@ -39,6 +39,7 @@ namespace Blackjack.Models
             Bankroll -= bedrag;
         }
 
+        // Voegt uitbetaling toe aan de bankroll
         public void Uitbetaling (decimal bedrag)
         {
             Bankroll += bedrag;
