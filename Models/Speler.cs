@@ -38,5 +38,10 @@ namespace Blackjack.Models
             Inzet = bedrag;
             Bankroll -= bedrag;
         }
+
+        public void Uitbetaling (decimal bedrag)
+        {
+            Bankroll += bedrag;
+        }
     }
 }
