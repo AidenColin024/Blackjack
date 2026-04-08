@@ -113,7 +113,9 @@ namespace Blackjack
             }
             else if (spelerTotaal == dealerTotaal)
             {
-                resultaat += "Gelijkspel!";
+                // Push: inzet terug, geen winst of verlies
+                speler.Uitbetaling(speler.Inzet);
+                resultaat += $"Gelijkspel! Je krijgt €{speler.Inzet} terug.\nBankroll: €{speler.Bankroll}";
             }
             else
             {
