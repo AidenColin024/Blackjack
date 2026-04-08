@@ -87,6 +87,9 @@ namespace Blackjack
             int spelerTotaal = speler.hand.GetTotalValue();
             int dealerTotaal = dealer.hand.GetTotalValue();
 
+            // Blackjack = 21 punten met exact 2 kaarten
+            bool spelerBlackjack = spelerTotaal == 21 && speler.hand.cards.Count == 2;
+
             string resultaat = $"Speler: {spelerTotaal}\nDealer: {dealerTotaal}\n\n";
 
             //Bepaald wie gewonnen heeft
@@ -94,6 +97,13 @@ namespace Blackjack
             {
                 // Bust: speler verliest, geen uitbetaling
                 resultaat += $"Bust! Je verliest €{speler.Inzet}.";
+            }
+            else if (spelerBlackjack) 
+            { 
+                // Blackjack: inzet terug + 3:2 winst
+                decimal winst = speler.Inzet * 1.5m;
+                speler.Uitbetaling(speler.Inzet + winst);
+                resultaat += $"Blackjack! Je wint €{winst} (3:2).\nBankroll: €{speler.Bankroll}";
             }
             else if (dealerTotaal > 21 || spelerTotaal > dealerTotaal)
             {
