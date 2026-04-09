@@ -16,7 +16,7 @@ namespace Blackjack.Models
         {
             hand = new Hand();
             Inzet = 0;
-            Bankroll = 100m;
+            Bankroll = 100;
 
         }
 
