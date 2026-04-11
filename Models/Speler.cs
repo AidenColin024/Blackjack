@@ -12,8 +12,9 @@ namespace Blackjack.Models
         // Huidig saldo van de speler
         public decimal Bankroll {  get; private set; }
 
-        public Speler()
+        public Speler(string naam)
         {
+            naam = naam;
             hand = new Hand();
             Inzet = 0;
             Bankroll = 100;
