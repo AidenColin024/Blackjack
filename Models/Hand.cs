@@ -24,10 +24,22 @@ namespace Blackjack.Models
         public int GetTotalValue()
         {
             int Total = 0;
+            int aantalAssen = 0;
 
             foreach (Card card in cards)
             {
                 Total += card.GetValue();
+
+                if (card.Rank == Rank.Ace)
+                {
+                    aantalAssen++;
+                }
+            }
+
+            while (Total > 21 &&  aantalAssen > 0)
+            {
+                Total -= 10;
+                aantalAssen--;
             }
             return Total;
         }
