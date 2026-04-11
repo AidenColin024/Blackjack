@@ -7,6 +7,9 @@ namespace Blackjack.Models
     {
         public Hand hand;
 
+
+        public string Naam { get; }
+
         // Huidige inzet van de speler voor deze ronde
         public decimal Inzet {  get; private set; }
         // Huidig saldo van de speler
@@ -14,7 +17,7 @@ namespace Blackjack.Models
 
         public Speler(string naam)
         {
-            naam = naam;
+            Naam = naam;
             hand = new Hand();
             Inzet = 0;
             Bankroll = 100;
