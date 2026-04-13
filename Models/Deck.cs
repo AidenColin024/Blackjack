@@ -10,11 +10,14 @@ namespace Blackjack.Models
     {
         public List<Card> cards { get; set; }
 
-        public Deck()
+        public Deck(int aantalDecks = 1)
         {
             cards = new List<Card>();
-            // Vul het deck bij aanmaken
-            GenerateDeck();
+            // Vul de shoe met het opgegeven aantal decks
+            for (int i = 0; i < aantalDecks; i++)
+            {
+                GenerateDeck();
+            }
         }
 
         // Maakt alle 52 kaarten aan door elke rank met elke suit te combineren
