@@ -122,98 +122,6 @@ namespace Blackjack
             VolgendeSpeler();
         }
 
-        // Bepaalt de uitslag voor alle spelers en verwerkt de uitbetalingen
-        // Regels: bust verliest, Blackjack betaalt 3:2, gewone winst 1:1, gelijkspel = push
-        private void BepaalUitslagAlleSpelers()
-        {
-            int dealerTotaal = dealer.hand.GetTotalValue();
-            string overzicht = "Dealer totaal: " + dealerTotaal + "\n\n";
-
-            foreach (Speler speler in spelers)
-            {
-                int spelerTotaal = speler.hand.GetTotalValue();
-
-                // Blackjack = 21 punten met exact 2 kaarten
-                bool spelerBlackjack = spelerTotaal == 21 && speler.hand.cards.Count == 2;
-
-                overzicht += speler.Naam + ": " + spelerTotaal + " — ";
-
-                if (spelerTotaal > 21)
-                {
-                    // Bust: speler verliest, geen uitbetaling
-                    overzicht += "Bust! Verliest €" + speler.Inzet + "\n";
-                }
-                else if (spelerBlackjack)
-                {
-                    // Blackjack: inzet terug + 3:2 winst
-                    decimal winst = speler.Inzet * 1.5m;
-                    speler.Uitbetaling(speler.Inzet + winst);
-                    overzicht += "Blackjack! Wint €" + winst + " (3:2). Bankroll: €" + speler.Bankroll + "\n";
-                }
-                else if (dealerTotaal > 21 || spelerTotaal > dealerTotaal)
-                {
-                    // Winst: inzet terug + 1:1 winst
-                    speler.Uitbetaling(speler.Inzet * 2);
-                    overzicht += "Wint €" + speler.Inzet + " (1:1). Bankroll: €" + speler.Bankroll + "\n";
-                }
-                else if (spelerTotaal == dealerTotaal)
-                {
-                    // Push: inzet terug, geen winst of verlies
-                    speler.Uitbetaling(speler.Inzet);
-                    overzicht += "Gelijkspel! Inzet terug. Bankroll: €" + speler.Bankroll + "\n";
-                }
-                else
-                {
-                    // Verlies: dealer wint
-                    overzicht += "Verloren! Bankroll: €" + speler.Bankroll + "\n";
-                }
-
-                // Toon eindscore van de dealer
-                MessageBox.Show("Ronde afgelopen!\nDealer score deze sessie: " + dealerScore + " punten.");
-
-                // Reset voor nieuwe ronde
-                huidigeSpelerIndex = 0;
-                dealStap = 0;
-            }
-
-            MessageBox.Show(overzicht);
-
-            // Reset voor nieuwe ronde
-            huidigeSpelerIndex = 0;
-            dealStap = 0;
-        }
-
-        // Gaat naar de volgende speler, of naar de dealer als alle spelers klaar zijn
-        private void VolgendeSpeler()
-        {
-            heeftVerdubbeld = false;
-            heeftGesplitst = false;
-            huidigeSpelerIndex++;
-
-            if (huidigeSpelerIndex < spelers.Count)
-            {
-                // Nog niet alle spelers geweest, toon beurt van volgende speler
-                Speler volgende = spelers[huidigeSpelerIndex];
-                MessageBox.Show("Beurt van " + volgende.Naam + ".\nTotaal: " + volgende.hand.GetTotalValue() + "\nDealer zichtbare kaart: " + dealer.hand.cards[0]);
-            }
-            else
-            {
-                // Alle spelers zijn geweest, dealer is aan de beurt
-                MessageBox.Show("Alle spelers zijn geweest.\nDealer onthult gesloten kaart: " + dealer.hand.cards[1] + "\nDealer totaal: " + dealer.hand.GetTotalValue());
-                dealStap = 6;
-
-                // Als dealer al op 17 of hoger zit hoeft hij niet meer te trekken
-                if (dealer.hand.GetTotalValue() >= 17)
-                {
-                    MessageBox.Show("Dealer heeft al " + dealer.hand.GetTotalValue() + ". Dealer past.");
-                    BepaalUitslagAlleSpelers();
-                }
-                else
-                {
-                    MessageBox.Show("Dealer heeft " + dealer.hand.GetTotalValue() + ". Druk op Deal om een kaart te trekken.");
-                }
-            }
-        }
 
         // Knop 4: Start spel - vraag aantal spelers en namen
         private void button4_Click(object sender, EventArgs e)
@@ -389,6 +297,151 @@ namespace Blackjack
 
             // Speler staat automatisch na verdubbelen
             VolgendeSpeler();
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (dealStap != 5)
+            {
+                MessageBox.Show("Je kan nu niet splitsen.");
+                return;
+            }
+
+            Speler huidigeSpeler = spelers[huidigeSpelerIndex];
+
+            // Splitsen mag alleen met de eerste twee kaarten
+            if (huidigeSpeler.hand.cards.Count != 2)
+            {
+                MessageBox.Show("Je kan alleen splitsen met je eerste twee kaarten.");
+                return;
+            }
+
+            // Controleer of de twee kaarten dezelfde waarde hebben
+            if (huidigeSpeler.hand.cards[0].GetValue() != huidigeSpeler.hand.cards[1].GetValue())
+            {
+                MessageBox.Show("Je kan alleen splitsen als beide kaarten dezelfde waarde hebben.");
+                return;
+            }
+
+            // Controleer of de speler genoeg bankroll heeft voor de extra inzet
+            if (huidigeSpeler.Inzet > huidigeSpeler.Bankroll)
+            {
+                MessageBox.Show("Niet genoeg bankroll om te splitsen.");
+                return;
+            }
+
+            // Sla de oude inzet op
+            decimal oudeInzet = huidigeSpeler.Inzet;
+
+            // Splits de hand en plaats dezelfde inzet op de tweede hand
+            huidigeSpeler.Split();
+            huidigeSpeler.PlaatsInzet(huidigeSpeler.Inzet);
+            heeftGesplitst = true;
+
+            // Geef elke hand een extra kaart
+            huidigeSpeler.hand.AddCard(deck.DrawCard());
+            huidigeSpeler.gesplitsteHand.AddCard(deck.DrawCard());
+
+            // Dealer krijgt een punt want splitsen is correct afgehandeld
+            dealerScore++;
+
+            MessageBox.Show(huidigeSpeler.Naam + " splitst!" +
+                "\nHand 1: " + huidigeSpeler.hand.cards[0] + " + " + huidigeSpeler.hand.cards[1] + " (totaal: " + huidigeSpeler.hand.GetTotalValue() + ")" +
+                "\nHand 2: " + huidigeSpeler.gesplitsteHand.cards[0] + " + " + huidigeSpeler.gesplitsteHand.cards[1] + " (totaal: " + huidigeSpeler.gesplitsteHand.GetTotalValue() + ")" +
+                "\nGoede beslissing! Score: " + dealerScore);
+        }
+
+        // Bepaalt de uitslag voor alle spelers en verwerkt de uitbetalingen
+        // Regels: bust verliest, Blackjack betaalt 3:2, gewone winst 1:1, gelijkspel = push
+        private void BepaalUitslagAlleSpelers()
+        {
+            int dealerTotaal = dealer.hand.GetTotalValue();
+            string overzicht = "Dealer totaal: " + dealerTotaal + "\n\n";
+
+            foreach (Speler speler in spelers)
+            {
+                int spelerTotaal = speler.hand.GetTotalValue();
+
+                // Blackjack = 21 punten met exact 2 kaarten
+                bool spelerBlackjack = spelerTotaal == 21 && speler.hand.cards.Count == 2;
+
+                overzicht += speler.Naam + ": " + spelerTotaal + " — ";
+
+                if (spelerTotaal > 21)
+                {
+                    // Bust: speler verliest, geen uitbetaling
+                    overzicht += "Bust! Verliest €" + speler.Inzet + "\n";
+                }
+                else if (spelerBlackjack)
+                {
+                    // Blackjack: inzet terug + 3:2 winst
+                    decimal winst = speler.Inzet * 1.5m;
+                    speler.Uitbetaling(speler.Inzet + winst);
+                    overzicht += "Blackjack! Wint €" + winst + " (3:2). Bankroll: €" + speler.Bankroll + "\n";
+                }
+                else if (dealerTotaal > 21 || spelerTotaal > dealerTotaal)
+                {
+                    // Winst: inzet terug + 1:1 winst
+                    speler.Uitbetaling(speler.Inzet * 2);
+                    overzicht += "Wint €" + speler.Inzet + " (1:1). Bankroll: €" + speler.Bankroll + "\n";
+                }
+                else if (spelerTotaal == dealerTotaal)
+                {
+                    // Push: inzet terug, geen winst of verlies
+                    speler.Uitbetaling(speler.Inzet);
+                    overzicht += "Gelijkspel! Inzet terug. Bankroll: €" + speler.Bankroll + "\n";
+                }
+                else
+                {
+                    // Verlies: dealer wint
+                    overzicht += "Verloren! Bankroll: €" + speler.Bankroll + "\n";
+                }
+
+                // Toon eindscore van de dealer
+                MessageBox.Show("Ronde afgelopen!\nDealer score deze sessie: " + dealerScore + " punten.");
+
+                // Reset voor nieuwe ronde
+                huidigeSpelerIndex = 0;
+                dealStap = 0;
+            }
+
+            MessageBox.Show(overzicht);
+
+            // Reset voor nieuwe ronde
+            huidigeSpelerIndex = 0;
+            dealStap = 0;
+        }
+
+        // Gaat naar de volgende speler, of naar de dealer als alle spelers klaar zijn
+        private void VolgendeSpeler()
+        {
+            heeftVerdubbeld = false;
+            heeftGesplitst = false;
+            huidigeSpelerIndex++;
+
+            if (huidigeSpelerIndex < spelers.Count)
+            {
+                // Nog niet alle spelers geweest, toon beurt van volgende speler
+                Speler volgende = spelers[huidigeSpelerIndex];
+                MessageBox.Show("Beurt van " + volgende.Naam + ".\nTotaal: " + volgende.hand.GetTotalValue() + "\nDealer zichtbare kaart: " + dealer.hand.cards[0]);
+            }
+            else
+            {
+                // Alle spelers zijn geweest, dealer is aan de beurt
+                MessageBox.Show("Alle spelers zijn geweest.\nDealer onthult gesloten kaart: " + dealer.hand.cards[1] + "\nDealer totaal: " + dealer.hand.GetTotalValue());
+                dealStap = 6;
+
+                // Als dealer al op 17 of hoger zit hoeft hij niet meer te trekken
+                if (dealer.hand.GetTotalValue() >= 17)
+                {
+                    MessageBox.Show("Dealer heeft al " + dealer.hand.GetTotalValue() + ". Dealer past.");
+                    BepaalUitslagAlleSpelers();
+                }
+                else
+                {
+                    MessageBox.Show("Dealer heeft " + dealer.hand.GetTotalValue() + ". Druk op Deal om een kaart te trekken.");
+                }
+            }
         }
     }
 }
