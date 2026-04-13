@@ -8,7 +8,6 @@ namespace Blackjack
     {
         private Deck deck;
         private Dealer dealer;
-        private Speler speler;
         private List<Speler> spelers;
         private int huidigeSpelerIndex = 0;
         private int dealerScore = 0;
@@ -119,54 +118,6 @@ namespace Blackjack
 
             MessageBox.Show(huidigeSpeler.Naam + " past met totaal: " + totaal);
             VolgendeSpeler();
-        }
-
-        // Bepaalt de uitslag en verwerkt de uitbetaling
-        // Regels: bust verliest, Blackjack betaalt 3:2, gewone winst 1:1, gelijkspel = push
-        private void BepaalUitslag()
-        {
-            int spelerTotaal = speler.hand.GetTotalValue();
-            int dealerTotaal = dealer.hand.GetTotalValue();
-
-            // Blackjack = 21 punten met exact 2 kaarten
-            bool spelerBlackjack = spelerTotaal == 21 && speler.hand.cards.Count == 2;
-
-            string resultaat = "Speler: " + spelerTotaal + "\nDealer: " + dealerTotaal + "\n\n";
-
-            if (spelerTotaal > 21)
-            {
-                // Bust: speler verliest, geen uitbetaling
-                resultaat = resultaat + "Bust! Speler verliest €" + speler.Inzet;
-            }
-            else if (spelerBlackjack)
-            {
-                // Blackjack: inzet terug + 3:2 winst
-                decimal winst = speler.Inzet * 1.5m;
-                speler.Uitbetaling(speler.Inzet + winst);
-                resultaat = resultaat + "Blackjack! Speler wint €" + winst + " (3:2).\nBankroll: €" + speler.Bankroll;
-            }
-            else if (dealerTotaal > 21 || spelerTotaal > dealerTotaal)
-            {
-                // Winst: inzet terug + 1:1 winst
-                speler.Uitbetaling(speler.Inzet * 2);
-                resultaat = resultaat + "Speler wint! Uitbetaling €" + speler.Inzet * 2 + " (1:1).\nBankroll: €" + speler.Bankroll;
-            }
-            else if (spelerTotaal == dealerTotaal)
-            {
-                // Push: inzet terug, geen winst of verlies
-                speler.Uitbetaling(speler.Inzet);
-                resultaat = resultaat + "Gelijkspel! Inzet €" + speler.Inzet + " terug.\nBankroll: €" + speler.Bankroll;
-            }
-            else
-            {
-                // Verlies: dealer wint
-                resultaat = resultaat + "Verloren! Dealer wint met " + dealerTotaal + ".\nBankroll: €" + speler.Bankroll;
-            }
-
-            MessageBox.Show(resultaat);
-
-            // Reset dealStap zodat een nieuwe ronde gestart kan worden
-            dealStap = 0;
         }
 
         // Bepaalt de uitslag voor alle spelers en verwerkt de uitbetalingen
