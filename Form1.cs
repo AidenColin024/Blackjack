@@ -178,8 +178,22 @@ namespace Blackjack
                 spelers[i].PlaatsInzet(inzet);
             }
 
-            // Deck en dealer aanmaken
-            deck = new Deck();
+            // Vraag hoeveel decks de shoe moet bevatten
+            string deckInput = Microsoft.VisualBasic.Interaction.InputBox("Hoeveel decks in de shoe? (1, 4 of 6)", "Shoe", "1");
+
+            int aantalDecks;
+            bool deckGeldig = int.TryParse(deckInput, out aantalDecks);
+
+            if (deckGeldig == false || (aantalDecks != 1 && aantalDecks != 4 && aantalDecks != 6))
+            {
+                MessageBox.Show("Ongeldig aantal decks. Er wordt 1 deck gebruikt.");
+                aantalDecks = 1;
+            }
+
+            // Maak de shoe aan met het opgegeven aantal decks
+            deck = new Deck(aantalDecks);
+
+            //dealer aanmaken
             dealer = new Dealer();
             deck.shuffle();
             dealStap = 1;
