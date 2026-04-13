@@ -12,6 +12,7 @@ namespace Blackjack
         private int huidigeSpelerIndex = 0;
         private int dealerScore = 0;
         private bool heeftVerdubbeld = false;
+        private bool heeftGesplitst = false;
 
         // Houdt bij in welke stap van het uitdelen we zitten
         private int dealStap = 0;
@@ -186,6 +187,7 @@ namespace Blackjack
         private void VolgendeSpeler()
         {
             heeftVerdubbeld = false;
+            heeftGesplitst = false;
             huidigeSpelerIndex++;
 
             if (huidigeSpelerIndex < spelers.Count)
@@ -219,6 +221,7 @@ namespace Blackjack
             spelers.Clear();
             huidigeSpelerIndex = 0;
             heeftVerdubbeld = false;
+            heeftGesplitst = false;
 
             // Vraag hoeveel spelers er zijn
             string aantalInput = Microsoft.VisualBasic.Interaction.InputBox("Hoeveel spelers? (1 tot 4)", "Aantal spelers", "1");
