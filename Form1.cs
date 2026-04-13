@@ -47,7 +47,7 @@ namespace Blackjack
             MessageBox.Show(deckOverzicht);
         }
 
-        // Knop 2: Hit - speler vraagt een extra kaart
+        // Knop 2: Hit - huidige speler vraagt een extra kaart
         private void button2_Click(object sender, EventArgs e)
         {
             if (dealStap != 5)
@@ -57,6 +57,26 @@ namespace Blackjack
             }
 
             Speler huidigeSpeler = spelers[huidigeSpelerIndex];
+            int totaalVoorHit = huidigeSpeler.hand.GetTotalValue();
+
+            // Controleer of Hit de juiste beslissing was
+            // Hit is correct als het totaal van de speler 11 of lager is
+            if (totaalVoorHit <= 11)
+            {
+                dealerScore++;
+                MessageBox.Show("Goede beslissing! Je score: " + dealerScore);
+            }
+            else if (totaalVoorHit >= 17)
+            {
+                dealerScore--;
+                MessageBox.Show("Foute beslissing! Bij " + totaalVoorHit + " had je moeten standen.\nJe score: " + dealerScore);
+            }
+            else
+            {
+                // Tussen 12 en 16 is het situatieafhankelijk, geen straf of punt
+                MessageBox.Show("Twijfelgeval bij " + totaalVoorHit + ". Geen punt of strafpunt.");
+            }
+
             huidigeSpeler.AddCard(deck.DrawCard());
             int totaal = huidigeSpeler.hand.GetTotalValue();
 
@@ -72,7 +92,7 @@ namespace Blackjack
             }
         }
 
-        // Knop 3: Stand - speler past, dealer is aan de beurt
+        // Knop 3: Stand - huidige speler past, volgende speler of dealer is aan de beurt
         private void button3_Click(object sender, EventArgs e)
         {
             if (dealStap != 5)
@@ -81,20 +101,24 @@ namespace Blackjack
                 return;
             }
 
-            // Onthul de gesloten kaart van de dealer
-            MessageBox.Show("Speler past.\nDealer onthult gesloten kaart: " + dealer.hand.cards[1] + "\nDealer totaal: " + dealer.hand.GetTotalValue());
-            dealStap = 6;
+            Speler huidigeSpeler = spelers[huidigeSpelerIndex];
+            int totaal = huidigeSpeler.hand.GetTotalValue();
 
-            // Als dealer al op 17 of hoger zit hoeft hij niet meer te trekken
-            if (dealer.hand.GetTotalValue() >= 17)
+            // Controleer of Stand de juiste beslissing was
+            // Stand is correct als het totaal van de speler 17 of hoger is
+            if (totaal >= 17)
             {
-                MessageBox.Show("Dealer heeft al " + dealer.hand.GetTotalValue() + ". Dealer past.");
-                BepaalUitslag();
+                dealerScore++;
+                MessageBox.Show("Goede beslissing! Je score: " + dealerScore);
             }
             else
             {
-                MessageBox.Show("Dealer heeft " + dealer.hand.GetTotalValue() + ". Druk op Deal om een kaart te trekken.");
+                dealerScore--;
+                MessageBox.Show("Foute beslissing! Bij " + totaal + " had je moeten hitten.\nJe score: " + dealerScore);
             }
+
+            MessageBox.Show(huidigeSpeler.Naam + " past met totaal: " + totaal);
+            VolgendeSpeler();
         }
 
         // Bepaalt de uitslag en verwerkt de uitbetaling
@@ -138,6 +162,13 @@ namespace Blackjack
                 // Verlies: dealer wint
                 resultaat = resultaat + "Verloren! Dealer wint met " + dealerTotaal + ".\nBankroll: €" + speler.Bankroll;
             }
+
+            // Toon eindscore van de dealer
+            MessageBox.Show("Ronde afgelopen!\nDealer score deze sessie: " + dealerScore + " punten.");
+
+            // Reset voor nieuwe ronde
+            huidigeSpelerIndex = 0;
+            dealStap = 0;
 
             MessageBox.Show(resultaat);
 
