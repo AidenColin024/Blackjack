@@ -403,6 +403,32 @@ namespace Blackjack
                 // Reset voor nieuwe ronde
                 huidigeSpelerIndex = 0;
                 dealStap = 0;
+
+                // Controleer of de speler ook een gesplitste hand heeft
+                if (speler.HeeftGesplitst)
+                {
+                    int gesplitsttotaal = speler.gesplitsteHand.GetTotalValue();
+                    overzicht += speler.Naam + " (hand 2): " + gesplitsttotaal + " — ";
+
+                    if (gesplitsttotaal > 21)
+                    {
+                        overzicht += "Bust! Verliest €" + speler.OrgineleInzet + "\n";
+                    }
+                    else if (dealerTotaal > 21 || gesplitsttotaal > dealerTotaal)
+                    {
+                        speler.Uitbetaling(speler.OrgineleInzet * 2);
+                        overzicht += "Wint €" + speler.OrgineleInzet + " (1:1). Bankroll: €" + speler.Bankroll + "\n";
+                    }
+                    else if (gesplitsttotaal == dealerTotaal)
+                    {
+                        speler.Uitbetaling(speler.OrgineleInzet);
+                        overzicht += "Gelijkspel! Inzet terug. Bankroll: €" + speler.Bankroll + "\n";
+                    }
+                    else
+                    {
+                        overzicht += "Verloren! Bankroll: €" + speler.Bankroll + "\n";
+                    }
+                }
             }
 
             MessageBox.Show(overzicht);
