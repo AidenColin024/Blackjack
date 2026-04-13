@@ -11,6 +11,7 @@ namespace Blackjack
         private Speler speler;
         private List<Speler> spelers;
         private int huidigeSpelerIndex = 0;
+        private int dealerScore = 0;
 
         // Houdt bij in welke stap van het uitdelen we zitten
         private int dealStap = 0;
