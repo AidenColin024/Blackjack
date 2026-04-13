@@ -333,5 +333,54 @@ namespace Blackjack
                 }
             }
         }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if (dealStap != 5)
+            {
+                MessageBox.Show("Je kan nu niet verdubbelen.");
+                return;
+            }
+
+            Speler huidigeSpeler = spelers[huidigeSpelerIndex];
+
+            // Verdubbelen mag alleen met de eerste twee kaarten
+            if (huidigeSpeler.hand.cards.Count != 2)
+            {
+                MessageBox.Show("Je kan alleen verdubbelen met je eerste twee kaarten.");
+                return;
+            }
+
+            // Controleer of de speler genoeg bankroll heeft om te verdubbelen
+            if (huidigeSpeler.Inzet > huidigeSpeler.Bankroll)
+            {
+                MessageBox.Show("Niet genoeg bankroll om te verdubbelen.");
+                return;
+            }
+
+            // Sla de oude inzet op voor de melding
+            decimal oudeInzet = huidigeSpeler.Inzet;
+
+            // Verdubbel de inzet door nog eens hetzelfde bedrag in te zetten
+            huidigeSpeler.PlaatsInzet(huidigeSpeler.Inzet);
+            heeftVerdubbeld = true;
+
+            // Speler krijgt precies één extra kaart
+            huidigeSpeler.AddCard(deck.DrawCard());
+            int totaal = huidigeSpeler.hand.GetTotalValue();
+
+            // Dealer krijgt een punt want verdubbelen is correct afgehandeld
+            dealerScore++;
+
+            MessageBox.Show(huidigeSpeler.Naam + " verdubbelt!" +
+                "\nOude inzet: €" + oudeInzet +
+                "\nNieuwe totale inzet: €" + (oudeInzet * 2) +
+                "\nGekregen kaart: " + huidigeSpeler.hand.cards[huidigeSpeler.hand.cards.Count - 1] +
+                "\nTotaal: " + totaal +
+                "\nGoede beslissing! Score: " + dealerScore);
+
+            // Speler staat automatisch na verdubbelen
+            VolgendeSpeler();
+        }
     }
 }
