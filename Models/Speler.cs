@@ -15,6 +15,8 @@ namespace Blackjack.Models
         // Huidig saldo van de speler
         public decimal Bankroll {  get; private set; }
 
+        public decimal OrgineleInzet { get; private set; }
+
         public Speler(string naam)
         {
             Naam = naam;
@@ -41,6 +43,7 @@ namespace Blackjack.Models
         {
             Inzet = bedrag;
             Bankroll -= bedrag;
+            OrgineleInzet = Inzet == 0 ? bedrag : Inzet;
         }
 
         // Voegt uitbetaling toe aan de bankroll
