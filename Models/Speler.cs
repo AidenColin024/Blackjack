@@ -48,5 +48,30 @@ namespace Blackjack.Models
         {
             Bankroll += bedrag;
         }
+
+        // Tweede hand na een split
+        public Hand gesplitsteHand;
+
+        // Geeft aan of de speler gesplitst heeft
+        public bool HeeftGesplitst { get; private set; }
+
+        // Splitst de hand in twee handen
+        public void Split()
+        {
+            gesplitsteHand = new Hand();
+
+            // Verplaats de tweede kaart naar de gesplitste hand
+            gesplitsteHand.AddCard(hand.cards[1]);
+            hand.cards.RemoveAt(1);
+
+            HeeftGesplitst = true;
+        }
+
+        // Reset de split voor een nieuwe ronde
+        public void ResetSplit()
+        {
+            gesplitsteHand = null;
+            HeeftGesplitst = false;
+        }
     }
 }
