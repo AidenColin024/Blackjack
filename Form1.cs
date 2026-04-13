@@ -223,6 +223,11 @@ namespace Blackjack
             heeftVerdubbeld = false;
             heeftGesplitst = false;
 
+            foreach (Speler speler in spelers)
+            {
+                speler.ResetSplit();
+            }
+
             // Vraag hoeveel spelers er zijn
             string aantalInput = Microsoft.VisualBasic.Interaction.InputBox("Hoeveel spelers? (1 tot 4)", "Aantal spelers", "1");
 
