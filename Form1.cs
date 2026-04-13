@@ -163,13 +163,6 @@ namespace Blackjack
                 resultaat = resultaat + "Verloren! Dealer wint met " + dealerTotaal + ".\nBankroll: €" + speler.Bankroll;
             }
 
-            // Toon eindscore van de dealer
-            MessageBox.Show("Ronde afgelopen!\nDealer score deze sessie: " + dealerScore + " punten.");
-
-            // Reset voor nieuwe ronde
-            huidigeSpelerIndex = 0;
-            dealStap = 0;
-
             MessageBox.Show(resultaat);
 
             // Reset dealStap zodat een nieuwe ronde gestart kan worden
@@ -221,6 +214,13 @@ namespace Blackjack
                     // Verlies: dealer wint
                     overzicht += "Verloren! Bankroll: €" + speler.Bankroll + "\n";
                 }
+
+                // Toon eindscore van de dealer
+                MessageBox.Show("Ronde afgelopen!\nDealer score deze sessie: " + dealerScore + " punten.");
+
+                // Reset voor nieuwe ronde
+                huidigeSpelerIndex = 0;
+                dealStap = 0;
             }
 
             MessageBox.Show(overzicht);
