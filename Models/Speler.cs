@@ -11,11 +11,11 @@ namespace Blackjack.Models
         public string Naam { get; }
 
         // Huidige inzet van de speler voor deze ronde
-        public decimal Inzet {  get; private set; }
+        public double Inzet {  get; private set; }
         // Huidig saldo van de speler
-        public decimal Bankroll {  get; private set; }
+        public double Bankroll {  get; private set; }
 
-        public decimal OrgineleInzet { get; private set; }
+        public double OrgineleInzet { get; private set; }
 
         public Speler(string naam)
         {
@@ -39,7 +39,7 @@ namespace Blackjack.Models
         }
 
         // Stelt de inzet in voor de huidige ronde
-        public void PlaatsInzet (decimal bedrag)
+        public void PlaatsInzet (double bedrag)
         {
             Inzet = bedrag;
             Bankroll -= bedrag;
@@ -47,7 +47,7 @@ namespace Blackjack.Models
         }
 
         // Voegt uitbetaling toe aan de bankroll
-        public void Uitbetaling (decimal bedrag)
+        public void Uitbetaling (double bedrag)
         {
             Bankroll += bedrag;
         }

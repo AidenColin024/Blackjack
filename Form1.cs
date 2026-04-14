@@ -134,8 +134,8 @@ namespace Blackjack
             {
                 string input = Microsoft.VisualBasic.Interaction.InputBox("Inzet voor " + spelers[i].Naam + "? (Bankroll: €" + spelers[i].Bankroll + ")", "Inzet plaatsen", "10");
 
-                decimal inzet;
-                bool isGeldig = decimal.TryParse(input, out inzet);
+                double inzet;
+                bool isGeldig = double.TryParse(input, out inzet);
 
                 if (isGeldig == false || inzet <= 0 || inzet > spelers[i].Bankroll)
                 {
@@ -269,7 +269,7 @@ namespace Blackjack
             }
 
             // Sla de oude inzet op voor de melding
-            decimal oudeInzet = huidigeSpeler.Inzet;
+            double oudeInzet = huidigeSpeler.Inzet;
 
             // Verdubbel de inzet door nog eens hetzelfde bedrag in te zetten
             huidigeSpeler.PlaatsInzet(huidigeSpeler.Inzet);
@@ -325,7 +325,7 @@ namespace Blackjack
             }
 
             // Sla de oude inzet op
-            decimal oudeInzet = huidigeSpeler.Inzet;
+            double oudeInzet = huidigeSpeler.Inzet;
 
             // Splits de hand en plaats dezelfde inzet op de tweede hand
             huidigeSpeler.Split();
@@ -369,7 +369,7 @@ namespace Blackjack
                 else if (spelerBlackjack)
                 {
                     // Blackjack: inzet terug + 3:2 winst
-                    decimal winst = speler.Inzet * 1.5m;
+                    double winst = speler.Inzet * 1.5;
                     speler.Uitbetaling(speler.Inzet + winst);
                     overzicht += "Blackjack! Wint €" + winst + " (3:2). Bankroll: €" + speler.Bankroll + "\n";
                 }
