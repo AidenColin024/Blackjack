@@ -60,24 +60,6 @@ namespace Blackjack
             Speler huidigeSpeler = spelers[huidigeSpelerIndex];
             int totaalVoorHit = huidigeSpeler.hand.GetTotalValue();
 
-            // Controleer of Hit de juiste beslissing was
-            // Hit is correct als het totaal van de speler 11 of lager is
-            if (totaalVoorHit <= 11)
-            {
-                dealerScore++;
-                MessageBox.Show("Goede beslissing! Je score: " + dealerScore);
-            }
-            else if (totaalVoorHit >= 17)
-            {
-                dealerScore--;
-                MessageBox.Show("Foute beslissing! Bij " + totaalVoorHit + " had je moeten standen.\nJe score: " + dealerScore);
-            }
-            else
-            {
-                // Tussen 12 en 16 is het situatieafhankelijk, geen straf of punt
-                MessageBox.Show("Twijfelgeval bij " + totaalVoorHit + ". Geen punt of strafpunt.");
-            }
-
             huidigeSpeler.AddCard(deck.DrawCard());
             int totaal = huidigeSpeler.hand.GetTotalValue();
 
@@ -105,23 +87,9 @@ namespace Blackjack
             Speler huidigeSpeler = spelers[huidigeSpelerIndex];
             int totaal = huidigeSpeler.hand.GetTotalValue();
 
-            // Controleer of Stand de juiste beslissing was
-            // Stand is correct als het totaal van de speler 17 of hoger is
-            if (totaal >= 17)
-            {
-                dealerScore++;
-                MessageBox.Show("Goede beslissing! Je score: " + dealerScore);
-            }
-            else
-            {
-                dealerScore--;
-                MessageBox.Show("Foute beslissing! Bij " + totaal + " had je moeten hitten.\nJe score: " + dealerScore);
-            }
-
             MessageBox.Show(huidigeSpeler.Naam + " past met totaal: " + totaal);
             VolgendeSpeler();
         }
-
 
         // Knop 4: Start spel - vraag aantal spelers en namen
         private void button4_Click(object sender, EventArgs e)
@@ -250,12 +218,24 @@ namespace Blackjack
             }
             else if (dealStap == 6)
             {
+                // Controleer of de dealer de juiste beslissing maakt
+                // Dealer moet trekken onder 17, standen op 17 of hoger
+                if (dealer.hand.GetTotalValue() >= 17)
+                {
+                    // Dealer drukt op Deal terwijl hij al 17 of hoger heeft, foute beslissing
+                    dealerScore--;
+                    MessageBox.Show("Foute beslissing! Bij " + dealer.hand.GetTotalValue() + " moet je passen.\nJe score: " + dealerScore);
+                    return;
+                }
+
                 // Dealer trekt zelf één kaart per klik
                 Card nieuweKaart = deck.DrawCard();
                 dealer.AddCard(nieuweKaart);
-                MessageBox.Show("Dealer trekt: " + nieuweKaart + "\nDealer totaal: " + dealer.hand.GetTotalValue());
 
-                // Controleer of dealer genoeg heeft
+                // Juiste beslissing want dealer had minder dan 17
+                dealerScore++;
+                MessageBox.Show("Goede beslissing! Je trekt bij " + (dealer.hand.GetTotalValue() - nieuweKaart.GetValue()) + ".\nDealer trekt: " + nieuweKaart + "\nDealer totaal: " + dealer.hand.GetTotalValue() + "\nJe score: " + dealerScore);
+
                 if (dealer.hand.GetTotalValue() >= 17)
                 {
                     MessageBox.Show("Dealer totaal is " + dealer.hand.GetTotalValue() + ". Dealer past.");
