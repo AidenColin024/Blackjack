@@ -11,11 +11,11 @@ namespace Blackjack.Models
         public string Naam { get; }
 
         // Huidige inzet van de speler voor deze ronde
-        public double Inzet {  get; private set; }
+        public double Inzet {  get; set; }
         // Huidig saldo van de speler
-        public double Bankroll {  get; private set; }
+        public double Bankroll {  get; set; }
 
-        public double OrgineleInzet { get; private set; }
+        public double OrgineleInzet { get; set; }
 
         public Speler(string naam)
         {
