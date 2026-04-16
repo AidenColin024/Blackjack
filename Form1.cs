@@ -1,10 +1,324 @@
+using Blackjack.Models;
+using System;
+using System.Windows.Forms;
+using System.Collections.Generic;
+
 namespace Blackjack
 {
     public partial class Form1 : Form
     {
+        private Deck deck;
+        private Dealer dealer;
+        private List<Speler> spelers;
+        private int huidigeSpelerIndex = 0;
+        private int dealerScore = 0;
+
+        // Houdt bij in welke stap van het uitdelen we zitten
+        private int dealStap = 0;
+
         public Form1()
         {
             InitializeComponent();
+
+            // Spelers worden eenmalig aangemaakt zodat bankroll bewaard blijft tussen rondes
+            spelers = new List<Speler>();
+        }
+
+        // Knop 1: Toon alle kaarten die nog in het deck zitten
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (deck == null)
+            {
+                MessageBox.Show("Er is nog geen deck. Start eerst een spel.");
+                return;
+            }
+
+            string deckOverzicht = "Kaarten in het deck (" + deck.cards.Count + " kaarten):\n\n";
+            foreach (Card card in deck.cards)
+            {
+                deckOverzicht += card + "\n";
+            }
+            MessageBox.Show(deckOverzicht);
+        }
+
+        // Knop 2: Hit - huidige speler vraagt een extra kaart
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (dealStap != 5)
+            {
+                MessageBox.Show("Je kan nu niet hitten.");
+                return;
+            }
+
+            Speler huidigeSpeler = spelers[huidigeSpelerIndex];
+            huidigeSpeler.AddCard(deck.DrawCard());
+            int totaal = huidigeSpeler.hand.GetTotalValue();
+
+            // Controleer of de speler bust is (meer dan 21 punten)
+            if (totaal > 21)
+            {
+                MessageBox.Show(huidigeSpeler.Naam + " bust! Totaal: " + totaal);
+                bool heeftVerdubbeld = false;
+                bool heeftGesplitst = false;
+                VolgendeSpeler volgendeSpeler = new VolgendeSpeler();
+                volgendeSpeler.volgendespeler(spelers, dealer, ref heeftVerdubbeld, ref heeftGesplitst, ref huidigeSpelerIndex, ref dealStap, ref dealerScore);
+            }
+            else
+            {
+                MessageBox.Show(huidigeSpeler.Naam + " trekt: " + huidigeSpeler.hand.cards[huidigeSpeler.hand.cards.Count - 1] + "\nTotaal: " + totaal);
+            }
+        }
+
+        // Knop 3: Stand - huidige speler past, volgende speler of dealer is aan de beurt
+        private void button3_Click(object sender, EventArgs e)
+        {
+            if (dealStap != 5)
+            {
+                MessageBox.Show("Je kan nu niet standen.");
+                return;
+            }
+
+            Speler huidigeSpeler = spelers[huidigeSpelerIndex];
+            MessageBox.Show(huidigeSpeler.Naam + " past. Totaal: " + huidigeSpeler.hand.GetTotalValue());
+
+            bool heeftVerdubbeld = false;
+            bool heeftGesplitst = false;
+            VolgendeSpeler volgendeSpeler = new VolgendeSpeler();
+            volgendeSpeler.volgendespeler(spelers, dealer, ref heeftVerdubbeld, ref heeftGesplitst, ref huidigeSpelerIndex, ref dealStap, ref dealerScore);
+        }
+
+        // Knop 4: Start spel - vraag aantal spelers en namen
+        private void button4_Click(object sender, EventArgs e)
+        {
+            spelers.Clear();
+            huidigeSpelerIndex = 0;
+
+            // Vraag hoeveel spelers er zijn
+            string aantalInput = Microsoft.VisualBasic.Interaction.InputBox("Hoeveel spelers? (1 tot 4)", "Aantal spelers", "1");
+
+            int aantalSpelers;
+            bool aantalGeldig = int.TryParse(aantalInput, out aantalSpelers);
+
+            if (aantalGeldig == false || aantalSpelers < 1 || aantalSpelers > 4)
+            {
+                MessageBox.Show("Ongeldig aantal. Kies tussen 1 en 4 spelers.");
+                return;
+            }
+
+            // Vraag de naam van elke speler
+            for (int i = 0; i < aantalSpelers; i++)
+            {
+                string naam = Microsoft.VisualBasic.Interaction.InputBox("Naam van speler " + (i + 1) + ":", "Spelersnaam", "Speler " + (i + 1));
+                if (naam == "")
+                {
+                    naam = "Speler " + (i + 1);
+                }
+                spelers.Add(new Speler(naam));
+            }
+
+            // Vraag inzet voor elke speler
+            for (int i = 0; i < spelers.Count; i++)
+            {
+                string input = Microsoft.VisualBasic.Interaction.InputBox("Inzet voor " + spelers[i].Naam + "? (Bankroll: €" + spelers[i].Bankroll + ")", "Inzet plaatsen", "10");
+
+                double inzet;
+                bool isGeldig = double.TryParse(input, out inzet);
+
+                if (isGeldig == false || inzet <= 0 || inzet > spelers[i].Bankroll)
+                {
+                    MessageBox.Show("Ongeldige inzet voor " + spelers[i].Naam + ". Inzet wordt €10.");
+                    inzet = 10;
+                }
+                spelers[i].PlaatsInzet(inzet);
+            }
+
+            // Vraag hoeveel decks de shoe moet bevatten
+            string deckInput = Microsoft.VisualBasic.Interaction.InputBox("Hoeveel decks in de shoe? (1, 4 of 6)", "Shoe", "1");
+
+            int aantalDecks;
+            bool deckGeldig = int.TryParse(deckInput, out aantalDecks);
+
+            if (deckGeldig == false || (aantalDecks != 1 && aantalDecks != 4 && aantalDecks != 6))
+            {
+                MessageBox.Show("Ongeldig aantal decks. Er wordt 1 deck gebruikt.");
+                aantalDecks = 1;
+            }
+
+            // Maak de shoe aan met het opgegeven aantal decks
+            deck = new Deck(aantalDecks);
+            dealer = new Dealer();
+            deck.shuffle();
+            dealStap = 1;
+
+            MessageBox.Show("Spel gestart met " + spelers.Count + " speler(s)!\nDruk op Deal om te beginnen.");
+        }
+
+        // Knop 5: Deal - deelt per klik één kaart
+        private void button5_Click(object sender, EventArgs e)
+        {
+            if (dealStap == 0)
+            {
+                MessageBox.Show("Start eerst een spel.");
+                return;
+            }
+
+            if (dealStap == 1)
+            {
+                // Eerste kaart voor elke speler
+                string overzicht = "Eerste kaart per speler:\n\n";
+                foreach (Speler speler in spelers)
+                {
+                    speler.AddCard(deck.DrawCard());
+                    overzicht += speler.Naam + ": " + speler.hand.cards[0] + "\n";
+                }
+                MessageBox.Show(overzicht);
+                dealStap = 2;
+            }
+            else if (dealStap == 2)
+            {
+                // Eerste kaart dealer open
+                dealer.AddCard(deck.DrawCard());
+                MessageBox.Show("Dealer toont: " + dealer.hand.cards[0]);
+                dealStap = 3;
+            }
+            else if (dealStap == 3)
+            {
+                // Tweede kaart voor elke speler
+                string overzicht = "Tweede kaart per speler:\n\n";
+                foreach (Speler speler in spelers)
+                {
+                    speler.AddCard(deck.DrawCard());
+                    overzicht += speler.Naam + ": " + speler.hand.cards[1] + " (totaal: " + speler.hand.GetTotalValue() + ")\n";
+                }
+                MessageBox.Show(overzicht);
+                dealStap = 4;
+            }
+            else if (dealStap == 4)
+            {
+                // Tweede kaart dealer gesloten
+                dealer.AddCard(deck.DrawCard());
+                MessageBox.Show("Dealer deelt zichzelf een gesloten kaart.\nDealer zichtbare kaart: " + dealer.hand.cards[0] + "\n\nBegin met de beurt van " + spelers[huidigeSpelerIndex].Naam + ".");
+                dealStap = 5;
+            }
+            else if (dealStap == 6)
+            {
+                // Dealer moet trekken onder 17, standen op 17 of hoger
+                if (dealer.hand.GetTotalValue() >= 17)
+                {
+                    // Foute beslissing: dealer trekt terwijl hij al 17 of hoger heeft
+                    dealerScore--;
+                    MessageBox.Show("Foute beslissing! Bij " + dealer.hand.GetTotalValue() + " moet je passen.\nScore: " + dealerScore);
+                    return;
+                }
+
+                // Dealer trekt zelf één kaart per klik
+                Card nieuweKaart = deck.DrawCard();
+                dealer.AddCard(nieuweKaart);
+
+                // Juiste beslissing want dealer had minder dan 17
+                dealerScore++;
+                MessageBox.Show("Goede beslissing! Dealer trekt: " + nieuweKaart + "\nDealer totaal: " + dealer.hand.GetTotalValue() + "\nScore: " + dealerScore);
+
+                if (dealer.hand.GetTotalValue() >= 17)
+                {
+                    MessageBox.Show("Dealer past met " + dealer.hand.GetTotalValue() + ".");
+                    BepaalUitslagAlleSpelers bepaalUitslag = new BepaalUitslagAlleSpelers();
+                    bepaalUitslag.bepaaluitslagallespelers(spelers, dealer, huidigeSpelerIndex, dealerScore, dealStap);
+                    huidigeSpelerIndex = 0;
+                    dealStap = 0;
+                }
+            }
+        }
+
+        // Knop 6: Dubbelen - speler verdubbelt zijn inzet en krijgt één extra kaart
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if (dealStap != 5)
+            {
+                MessageBox.Show("Je kan nu niet verdubbelen.");
+                return;
+            }
+
+            Speler huidigeSpeler = spelers[huidigeSpelerIndex];
+
+            // Verdubbelen mag alleen met de eerste twee kaarten
+            if (huidigeSpeler.hand.cards.Count != 2)
+            {
+                MessageBox.Show("Je kan alleen verdubbelen met je eerste twee kaarten.");
+                return;
+            }
+
+            // Controleer of de speler genoeg bankroll heeft om te verdubbelen
+            if (huidigeSpeler.Inzet > huidigeSpeler.Bankroll)
+            {
+                MessageBox.Show("Niet genoeg bankroll om te verdubbelen.");
+                return;
+            }
+
+            // Sla de oude inzet op voor de melding
+            double oudeInzet = huidigeSpeler.Inzet;
+
+            // Verdubbel de inzet door nog eens hetzelfde bedrag in te zetten
+            huidigeSpeler.PlaatsInzet(huidigeSpeler.Inzet);
+
+            // Speler krijgt precies één extra kaart
+            huidigeSpeler.AddCard(deck.DrawCard());
+            int totaal = huidigeSpeler.hand.GetTotalValue();
+
+            // Dealer krijgt een punt want verdubbelen is correct afgehandeld
+            dealerScore++;
+            MessageBox.Show(huidigeSpeler.Naam + " verdubbelt! Inzet: €" + (oudeInzet * 2) + "\nTotaal: " + totaal + "\nScore: " + dealerScore);
+
+            // Speler staat automatisch na verdubbelen
+            bool heeftVerdubbeld = false;
+            bool heeftGesplitst = false;
+            VolgendeSpeler volgendeSpeler = new VolgendeSpeler();
+            volgendeSpeler.volgendespeler(spelers, dealer, ref heeftVerdubbeld, ref heeftGesplitst, ref huidigeSpelerIndex, ref dealStap, ref dealerScore);
+        }
+
+        // Knop 7: Splitsen - speler splitst twee kaarten van dezelfde waarde
+        private void button7_Click(object sender, EventArgs e)
+        {
+            if (dealStap != 5)
+            {
+                MessageBox.Show("Je kan nu niet splitsen.");
+                return;
+            }
+
+            Speler huidigeSpeler = spelers[huidigeSpelerIndex];
+
+            // Splitsen mag alleen met de eerste twee kaarten
+            if (huidigeSpeler.hand.cards.Count != 2)
+            {
+                MessageBox.Show("Je kan alleen splitsen met je eerste twee kaarten.");
+                return;
+            }
+
+            // Controleer of de twee kaarten dezelfde waarde hebben
+            if (huidigeSpeler.hand.cards[0].GetValue() != huidigeSpeler.hand.cards[1].GetValue())
+            {
+                MessageBox.Show("Je kan alleen splitsen als beide kaarten dezelfde waarde hebben.");
+                return;
+            }
+
+            // Controleer of de speler genoeg bankroll heeft voor de extra inzet
+            if (huidigeSpeler.Inzet > huidigeSpeler.Bankroll)
+            {
+                MessageBox.Show("Niet genoeg bankroll om te splitsen.");
+                return;
+            }
+
+            // Splits de hand en plaats dezelfde inzet op de tweede hand
+            huidigeSpeler.Split();
+            huidigeSpeler.PlaatsInzet(huidigeSpeler.Inzet);
+
+            // Geef elke hand een extra kaart
+            huidigeSpeler.hand.AddCard(deck.DrawCard());
+            huidigeSpeler.gesplitsteHand.AddCard(deck.DrawCard());
+
+            // Dealer krijgt een punt want splitsen is correct afgehandeld
+            dealerScore++;
+            MessageBox.Show(huidigeSpeler.Naam + " splitst!\nHand 1 totaal: " + huidigeSpeler.hand.GetTotalValue() + "\nHand 2 totaal: " + huidigeSpeler.gesplitsteHand.GetTotalValue() + "\nScore: " + dealerScore);
         }
     }
 }
