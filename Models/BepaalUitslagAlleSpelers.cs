@@ -53,13 +53,6 @@ namespace Blackjack.Models
                     overzicht += "Verloren! Bankroll: €" + speler.Bankroll + "\n";
                 }
 
-                // Toon eindscore van de dealer
-                MessageBox.Show("Ronde afgelopen!\nDealer score deze sessie: " + dealerScore + " punten.");
-
-                // Reset voor nieuwe ronde
-                huidigeSpelerIndex = 0;
-                dealStap = 0;
-
                 // Controleer of de speler ook een gesplitste hand heeft
                 if (speler.HeeftGesplitst)
                 {
@@ -87,11 +80,9 @@ namespace Blackjack.Models
                 }
             }
 
+            // Toon uitslag en eindscore
             MessageBox.Show(overzicht);
-
-            // Reset voor nieuwe ronde
-            huidigeSpelerIndex = 0;
-            dealStap = 0;
+            MessageBox.Show("Ronde afgelopen!\nScore: " + dealerScore + " punten.");
         }
     }
 }
