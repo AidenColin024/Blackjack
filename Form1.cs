@@ -12,8 +12,6 @@ namespace Blackjack
         private List<Speler> spelers;
         private int huidigeSpelerIndex = 0;
         private int dealerScore = 0;
-        private bool heeftVerdubbeld = false;
-        private bool heeftGesplitst = false;
 
         // Houdt bij in welke stap van het uitdelen we zitten
         private int dealStap = 0;
@@ -66,6 +64,8 @@ namespace Blackjack
             {
                 MessageBox.Show(huidigeSpeler.Naam + " trekt: " + huidigeSpeler.hand.cards[huidigeSpeler.hand.cards.Count - 1] + "\nTotaal: " + totaal + "\nBust! Je verliest.");
 
+                bool heeftVerdubbeld = false;
+                bool heeftGesplitst = false;
                 VolgendeSpeler volgendeSpeler = new VolgendeSpeler();
                 volgendeSpeler.volgendespeler(spelers, dealer, ref heeftVerdubbeld, ref heeftGesplitst, ref huidigeSpelerIndex, ref dealStap, ref dealerScore);
             }
@@ -89,6 +89,8 @@ namespace Blackjack
 
             MessageBox.Show(huidigeSpeler.Naam + " past met totaal: " + totaal);
 
+            bool heeftVerdubbeld = false;
+            bool heeftGesplitst = false;
             VolgendeSpeler volgendeSpeler = new VolgendeSpeler();
             volgendeSpeler.volgendespeler(spelers, dealer, ref heeftVerdubbeld, ref heeftGesplitst, ref huidigeSpelerIndex, ref dealStap, ref dealerScore);
         }
@@ -98,8 +100,6 @@ namespace Blackjack
         {
             spelers.Clear();
             huidigeSpelerIndex = 0;
-            heeftVerdubbeld = false;
-            heeftGesplitst = false;
 
             // Vraag hoeveel spelers er zijn
             string aantalInput = Microsoft.VisualBasic.Interaction.InputBox("Hoeveel spelers? (1 tot 4)", "Aantal spelers", "1");
@@ -272,7 +272,7 @@ namespace Blackjack
 
             // Verdubbel de inzet door nog eens hetzelfde bedrag in te zetten
             huidigeSpeler.PlaatsInzet(huidigeSpeler.Inzet);
-            heeftVerdubbeld = true;
+
 
             // Speler krijgt precies één extra kaart
             huidigeSpeler.AddCard(deck.DrawCard());
@@ -289,6 +289,9 @@ namespace Blackjack
                 "\nGoede beslissing! Score: " + dealerScore);
 
             // Speler staat automatisch na verdubbelen
+
+            bool heeftVerdubbeld = false;
+            bool heeftGesplitst = false;
             VolgendeSpeler volgendeSpeler = new VolgendeSpeler();
             volgendeSpeler.volgendespeler(spelers, dealer, ref heeftVerdubbeld, ref heeftGesplitst, ref huidigeSpelerIndex, ref dealStap, ref dealerScore);
         }
@@ -330,7 +333,6 @@ namespace Blackjack
             // Splits de hand en plaats dezelfde inzet op de tweede hand
             huidigeSpeler.Split();
             huidigeSpeler.PlaatsInzet(huidigeSpeler.Inzet);
-            heeftGesplitst = true;
 
             // Geef elke hand een extra kaart
             huidigeSpeler.hand.AddCard(deck.DrawCard());
