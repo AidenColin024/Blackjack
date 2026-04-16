@@ -7,7 +7,6 @@ namespace Blackjack.Models
 {
     internal class VolgendeSpeler
     {
-
         // Gaat naar de volgende speler, of naar de dealer als alle spelers klaar zijn
         public void volgendespeler(List<Speler> spelers, Dealer dealer, ref bool heeftVerdubbeld, ref bool heeftGesplitst, ref int huidigeSpelerIndex, ref int dealStap, ref int dealerScore)
         {

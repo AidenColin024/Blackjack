@@ -25,7 +25,6 @@ namespace Blackjack
         }
 
         // Knop 1: Toon alle kaarten die nog in het deck zitten
-        // Handig om te controleren welke kaarten er nog over zijn
         private void button1_Click(object sender, EventArgs e)
         {
             if (deck == null)
@@ -34,14 +33,11 @@ namespace Blackjack
                 return;
             }
 
-            // Loop door alle kaarten in het deck en voeg ze toe aan de output
             string deckOverzicht = "Kaarten in het deck (" + deck.cards.Count + " kaarten):\n\n";
-
             foreach (Card card in deck.cards)
             {
                 deckOverzicht += card + "\n";
             }
-
             MessageBox.Show(deckOverzicht);
         }
 
@@ -55,15 +51,13 @@ namespace Blackjack
             }
 
             Speler huidigeSpeler = spelers[huidigeSpelerIndex];
-
             huidigeSpeler.AddCard(deck.DrawCard());
             int totaal = huidigeSpeler.hand.GetTotalValue();
 
             // Controleer of de speler bust is (meer dan 21 punten)
             if (totaal > 21)
             {
-                MessageBox.Show(huidigeSpeler.Naam + " trekt: " + huidigeSpeler.hand.cards[huidigeSpeler.hand.cards.Count - 1] + "\nTotaal: " + totaal + "\nBust! Je verliest.");
-
+                MessageBox.Show(huidigeSpeler.Naam + " bust! Totaal: " + totaal);
                 bool heeftVerdubbeld = false;
                 bool heeftGesplitst = false;
                 VolgendeSpeler volgendeSpeler = new VolgendeSpeler();
@@ -85,9 +79,7 @@ namespace Blackjack
             }
 
             Speler huidigeSpeler = spelers[huidigeSpelerIndex];
-            int totaal = huidigeSpeler.hand.GetTotalValue();
-
-            MessageBox.Show(huidigeSpeler.Naam + " past met totaal: " + totaal);
+            MessageBox.Show(huidigeSpeler.Naam + " past. Totaal: " + huidigeSpeler.hand.GetTotalValue());
 
             bool heeftVerdubbeld = false;
             bool heeftGesplitst = false;
@@ -117,12 +109,10 @@ namespace Blackjack
             for (int i = 0; i < aantalSpelers; i++)
             {
                 string naam = Microsoft.VisualBasic.Interaction.InputBox("Naam van speler " + (i + 1) + ":", "Spelersnaam", "Speler " + (i + 1));
-
                 if (naam == "")
                 {
                     naam = "Speler " + (i + 1);
                 }
-
                 spelers.Add(new Speler(naam));
             }
 
@@ -139,7 +129,6 @@ namespace Blackjack
                     MessageBox.Show("Ongeldige inzet voor " + spelers[i].Naam + ". Inzet wordt €10.");
                     inzet = 10;
                 }
-
                 spelers[i].PlaatsInzet(inzet);
             }
 
@@ -157,8 +146,6 @@ namespace Blackjack
 
             // Maak de shoe aan met het opgegeven aantal decks
             deck = new Deck(aantalDecks);
-
-            //dealer aanmaken
             dealer = new Dealer();
             deck.shuffle();
             dealStap = 1;
@@ -215,13 +202,12 @@ namespace Blackjack
             }
             else if (dealStap == 6)
             {
-                // Controleer of de dealer de juiste beslissing maakt
                 // Dealer moet trekken onder 17, standen op 17 of hoger
                 if (dealer.hand.GetTotalValue() >= 17)
                 {
-                    // Dealer drukt op Deal terwijl hij al 17 of hoger heeft, foute beslissing
+                    // Foute beslissing: dealer trekt terwijl hij al 17 of hoger heeft
                     dealerScore--;
-                    MessageBox.Show("Foute beslissing! Bij " + dealer.hand.GetTotalValue() + " moet je passen.\nJe score: " + dealerScore);
+                    MessageBox.Show("Foute beslissing! Bij " + dealer.hand.GetTotalValue() + " moet je passen.\nScore: " + dealerScore);
                     return;
                 }
 
@@ -231,18 +217,20 @@ namespace Blackjack
 
                 // Juiste beslissing want dealer had minder dan 17
                 dealerScore++;
-                MessageBox.Show("Goede beslissing! Je trekt bij " + (dealer.hand.GetTotalValue() - nieuweKaart.GetValue()) + ".\nDealer trekt: " + nieuweKaart + "\nDealer totaal: " + dealer.hand.GetTotalValue() + "\nJe score: " + dealerScore);
+                MessageBox.Show("Goede beslissing! Dealer trekt: " + nieuweKaart + "\nDealer totaal: " + dealer.hand.GetTotalValue() + "\nScore: " + dealerScore);
 
                 if (dealer.hand.GetTotalValue() >= 17)
                 {
-                    MessageBox.Show("Dealer totaal is " + dealer.hand.GetTotalValue() + ". Dealer past.");
-
+                    MessageBox.Show("Dealer past met " + dealer.hand.GetTotalValue() + ".");
                     BepaalUitslagAlleSpelers bepaalUitslag = new BepaalUitslagAlleSpelers();
                     bepaalUitslag.bepaaluitslagallespelers(spelers, dealer, huidigeSpelerIndex, dealerScore, dealStap);
+                    huidigeSpelerIndex = 0;
+                    dealStap = 0;
                 }
             }
         }
 
+        // Knop 6: Dubbelen - speler verdubbelt zijn inzet en krijgt één extra kaart
         private void button6_Click(object sender, EventArgs e)
         {
             if (dealStap != 5)
@@ -273,29 +261,22 @@ namespace Blackjack
             // Verdubbel de inzet door nog eens hetzelfde bedrag in te zetten
             huidigeSpeler.PlaatsInzet(huidigeSpeler.Inzet);
 
-
             // Speler krijgt precies één extra kaart
             huidigeSpeler.AddCard(deck.DrawCard());
             int totaal = huidigeSpeler.hand.GetTotalValue();
 
             // Dealer krijgt een punt want verdubbelen is correct afgehandeld
             dealerScore++;
-
-            MessageBox.Show(huidigeSpeler.Naam + " verdubbelt!" +
-                "\nOude inzet: €" + oudeInzet +
-                "\nNieuwe totale inzet: €" + (oudeInzet * 2) +
-                "\nGekregen kaart: " + huidigeSpeler.hand.cards[huidigeSpeler.hand.cards.Count - 1] +
-                "\nTotaal: " + totaal +
-                "\nGoede beslissing! Score: " + dealerScore);
+            MessageBox.Show(huidigeSpeler.Naam + " verdubbelt! Inzet: €" + (oudeInzet * 2) + "\nTotaal: " + totaal + "\nScore: " + dealerScore);
 
             // Speler staat automatisch na verdubbelen
-
             bool heeftVerdubbeld = false;
             bool heeftGesplitst = false;
             VolgendeSpeler volgendeSpeler = new VolgendeSpeler();
             volgendeSpeler.volgendespeler(spelers, dealer, ref heeftVerdubbeld, ref heeftGesplitst, ref huidigeSpelerIndex, ref dealStap, ref dealerScore);
         }
 
+        // Knop 7: Splitsen - speler splitst twee kaarten van dezelfde waarde
         private void button7_Click(object sender, EventArgs e)
         {
             if (dealStap != 5)
@@ -327,9 +308,6 @@ namespace Blackjack
                 return;
             }
 
-            // Sla de oude inzet op
-            double oudeInzet = huidigeSpeler.Inzet;
-
             // Splits de hand en plaats dezelfde inzet op de tweede hand
             huidigeSpeler.Split();
             huidigeSpeler.PlaatsInzet(huidigeSpeler.Inzet);
@@ -340,12 +318,7 @@ namespace Blackjack
 
             // Dealer krijgt een punt want splitsen is correct afgehandeld
             dealerScore++;
-
-            MessageBox.Show(huidigeSpeler.Naam + " splitst!" +
-                "\nHand 1: " + huidigeSpeler.hand.cards[0] + " + " + huidigeSpeler.hand.cards[1] + " (totaal: " + huidigeSpeler.hand.GetTotalValue() + ")" +
-                "\nHand 2: " + huidigeSpeler.gesplitsteHand.cards[0] + " + " + huidigeSpeler.gesplitsteHand.cards[1] + " (totaal: " + huidigeSpeler.gesplitsteHand.GetTotalValue() + ")" +
-                "\nGoede beslissing! Score: " + dealerScore
-            );
+            MessageBox.Show(huidigeSpeler.Naam + " splitst!\nHand 1 totaal: " + huidigeSpeler.hand.GetTotalValue() + "\nHand 2 totaal: " + huidigeSpeler.gesplitsteHand.GetTotalValue() + "\nScore: " + dealerScore);
         }
     }
 }
