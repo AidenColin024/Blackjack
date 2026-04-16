@@ -15,6 +15,7 @@ namespace Blackjack.Models
         // Huidig saldo van de speler
         public double Bankroll {  get; set; }
 
+        //orginele inzet van de speler
         public double OrgineleInzet { get; set; }
 
         public Speler(string naam)
