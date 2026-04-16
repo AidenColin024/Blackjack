@@ -57,7 +57,6 @@ namespace Blackjack
             }
 
             Speler huidigeSpeler = spelers[huidigeSpelerIndex];
-            int totaalVoorHit = huidigeSpeler.hand.GetTotalValue();
 
             huidigeSpeler.AddCard(deck.DrawCard());
             int totaal = huidigeSpeler.hand.GetTotalValue();
@@ -68,7 +67,7 @@ namespace Blackjack
                 MessageBox.Show(huidigeSpeler.Naam + " trekt: " + huidigeSpeler.hand.cards[huidigeSpeler.hand.cards.Count - 1] + "\nTotaal: " + totaal + "\nBust! Je verliest.");
 
                 VolgendeSpeler volgendeSpeler = new VolgendeSpeler();
-                volgendeSpeler.volgendespeler(spelers, dealer, ref heeftVerdubbeld, ref heeftGesplitst, ref huidigeSpelerIndex, ref dealStap, dealerScore);
+                volgendeSpeler.volgendespeler(spelers, dealer, ref heeftVerdubbeld, ref heeftGesplitst, ref huidigeSpelerIndex, ref dealStap, ref dealerScore);
             }
             else
             {
@@ -91,7 +90,7 @@ namespace Blackjack
             MessageBox.Show(huidigeSpeler.Naam + " past met totaal: " + totaal);
 
             VolgendeSpeler volgendeSpeler = new VolgendeSpeler();
-            volgendeSpeler.volgendespeler(spelers, dealer, ref heeftVerdubbeld, ref heeftGesplitst, ref huidigeSpelerIndex, ref dealStap, dealerScore);
+            volgendeSpeler.volgendespeler(spelers, dealer, ref heeftVerdubbeld, ref heeftGesplitst, ref huidigeSpelerIndex, ref dealStap, ref dealerScore);
         }
 
         // Knop 4: Start spel - vraag aantal spelers en namen
@@ -101,11 +100,6 @@ namespace Blackjack
             huidigeSpelerIndex = 0;
             heeftVerdubbeld = false;
             heeftGesplitst = false;
-
-            foreach (Speler speler in spelers)
-            {
-                speler.ResetSplit();
-            }
 
             // Vraag hoeveel spelers er zijn
             string aantalInput = Microsoft.VisualBasic.Interaction.InputBox("Hoeveel spelers? (1 tot 4)", "Aantal spelers", "1");
@@ -296,7 +290,7 @@ namespace Blackjack
 
             // Speler staat automatisch na verdubbelen
             VolgendeSpeler volgendeSpeler = new VolgendeSpeler();
-            volgendeSpeler.volgendespeler(spelers, dealer, ref heeftVerdubbeld, ref heeftGesplitst, ref huidigeSpelerIndex, ref dealStap, dealerScore);
+            volgendeSpeler.volgendespeler(spelers, dealer, ref heeftVerdubbeld, ref heeftGesplitst, ref huidigeSpelerIndex, ref dealStap, ref dealerScore);
         }
 
         private void button7_Click(object sender, EventArgs e)
