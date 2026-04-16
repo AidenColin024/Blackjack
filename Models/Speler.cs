@@ -8,7 +8,7 @@ namespace Blackjack.Models
         public Hand hand;
 
 
-        public string Naam { get; }
+        public string Naam { get; set; }
 
         // Huidige inzet van de speler voor deze ronde
         public double Inzet {  get; set; }

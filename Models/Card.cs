@@ -64,7 +64,7 @@ namespace Blackjack.Models
         // Geeft een leesbare weergave van de kaart, bijv. "King of Hearts"
         public override string ToString()
         {
-            return $"{Rank} of {Suit}";
+            return Rank + "of" + Suit;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Blackjack.Models
     {
         public List<Card> cards { get; set; }
 
-        public Deck(int aantalDecks = 1)
+        public Deck(int aantalDecks)
         {
             cards = new List<Card>();
             // Vul de shoe met het opgegeven aantal decks
